@@ -26,11 +26,17 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable);
 
     // Register a view and its associated view container in the activity bar
-    const gitHistoryView = vscode.window.createTreeView('vscGitHistory', {
+    const gitHistoryView = vscode.window.createTreeView('gitLogViewer', {
         treeDataProvider: new GitLogDataProvider(),
         showCollapseAll: true,
     });
     context.subscriptions.push(gitHistoryView);
+
+    const resetHistoryView = vscode.window.createTreeView('resetHistoryPanel', {
+        treeDataProvider: new ResetHistoryDataProvider(),
+        showCollapseAll: true,
+    });
+    context.subscriptions.push(resetHistoryView);
 }
 
 class GitLogDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
@@ -39,10 +45,7 @@ class GitLogDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
-        if (element) {
-            // If there is an element, it means we are looking for child nodes of that element which we do not have in this simple example
-            return [];
-        } else {
+        if (!element) {
             // Fetch the git log and map it to TreeItems
             try {
                 const gitLog = await GitLogViewer.getGitLog();
@@ -61,7 +64,23 @@ class GitLogDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
                 vscode.window.showErrorMessage('Failed to fetch git log for tree view. See console for details.');
                 return [];
             }
+        } else {
+            return [];
         }
+    }
+}
+
+class ResetHistoryDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
+    // Placeholder for reset history data provider logic
+    // This should fetch and display the history of reset actions performed through the extension
+    async getTreeItem(element: vscode.TreeItem): Promise<vscode.TreeItem> {
+        return element;
+    }
+
+    async getChildren(element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
+        // Placeholder for fetching reset history data
+        // For now, return an empty array
+        return [];
     }
 }
 

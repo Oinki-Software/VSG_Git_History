@@ -2,17 +2,18 @@
   "name": "vsc-git-history",
   "displayName": "VSC Git History",
   "description": "Visual Studio Code Extension for Git Log and Reset",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "Oinki Software",
   "engines": {
-    "vscode": "^1.87.0"
+    "vscode": "^1.86.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vsc-git-history.helloWorld",
-    "onCommand:vsc-git-history.viewGitLog"
+    "onCommand:vsc-git-history.viewGitLog",
+    "onView:vscGitHistory.gitLogViewer",
+    "onView:vscGitHistory.resetHistoryPanel"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -54,7 +55,7 @@
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
-    "@types/vscode": "^1.87.0",
+    "@types/vscode": "^1.86.0",
     "typescript": "^5.4.3",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
