@@ -1,0 +1,68 @@
+{
+  "name": "vsc-git-history",
+  "displayName": "VSC Git History",
+  "description": "Visual Studio Code Extension for Git Log and Reset",
+  "version": "0.0.1",
+  "publisher": "Oinki Software",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:vsc-git-history.helloWorld",
+    "onCommand:vsc-git-history.viewGitLog"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "vsc-git-history.viewGitLog",
+        "title": "View Git Log"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vscGitHistory",
+          "title": "Git History",
+          "icon": "media/git-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "vscGitHistory": [
+        {
+          "id": "gitLogViewer",
+          "name": "Git Log Viewer"
+        },
+        {
+          "id": "resetHistoryPanel",
+          "name": "Reset History"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "prepublish": "npm run compile",
+    "test": "vscode-test",
+    "vscode:prepublish": "npm run compile",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.87.0",
+    "typescript": "^5.4.3",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
+    "@vscode/test-cli": "^0.0.8",
+    "@vscode/test-electron": "^2.3.9"
+  }
+}
