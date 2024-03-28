@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { GitLogViewer } from './gitLogViewer';
+import { GitLogViewerUI } from './gitLogViewerUI';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -39,6 +40,9 @@ export function activate(context: vscode.ExtensionContext) {
         showCollapseAll: true,
     });
     context.subscriptions.push(resetHistoryView);
+
+    // Register the command that opens the Git Log Viewer UI
+    context.subscriptions.push(vscode.commands.registerCommand('vsc-git-history.viewGitLogPanel', () => GitLogViewerUI.showGitLogPanel(context)));
 }
 
 class GitLogDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {

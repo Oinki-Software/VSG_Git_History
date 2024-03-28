@@ -13,7 +13,8 @@
   "activationEvents": [
     "onCommand:vsc-git-history.viewGitLog",
     "onView:vscGitHistory.gitLogViewer",
-    "onView:vscGitHistory.resetHistoryPanel"
+    "onView:vscGitHistory.resetHistoryPanel",
+    "onCommand:vsc-git-history.viewGitLogPanel"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -21,6 +22,10 @@
       {
         "command": "vsc-git-history.viewGitLog",
         "title": "View Git Log"
+      },
+      {
+        "command": "vsc-git-history.viewGitLogPanel",
+        "title": "Open Git Log Viewer"
       }
     ],
     "viewsContainers": {
