@@ -12,8 +12,10 @@ export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('vsc-git-history.viewGitLog', async () => {
         try {
             const gitLog = await GitLogViewer.getGitLog();
-            if (gitLog) {
-                vscode.window.showInformationMessage(`Git Log:\n${gitLog}`);
+            if (gitLog.length > 0) {
+                const gitLogMessages = gitLog.map(commit => `${commit.hash} - ${commit.date} - ${commit.message}`).join('\n');
+                vscode.window.showInformationMessage(`Git Log:\n${gitLogMessages}`);
+                console.log(`Git Log:\n${gitLogMessages}`); // Logging the git log for debugging
             } else {
                 vscode.window.showInformationMessage('No git log available.');
             }
@@ -49,11 +51,9 @@ class GitLogDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
             // Fetch the git log and map it to TreeItems
             try {
                 const gitLog = await GitLogViewer.getGitLog();
-                if (gitLog) {
-                    const commits = gitLog.split('\n').filter(line => line.trim() !== '').map(commitLine => {
-                        const [hash, date, ...messageParts] = commitLine.split(' - ');
-                        const message = messageParts.join(' - ');
-                        return new vscode.TreeItem(`${hash} - ${message}`);
+                if (gitLog.length > 0) {
+                    const commits = gitLog.map(commit => {
+                        return new vscode.TreeItem(`${commit.hash} - ${commit.date} - ${commit.message}`);
                     });
                     return commits;
                 } else {

@@ -5,7 +5,7 @@
   "version": "0.0.2",
   "publisher": "Oinki Software",
   "engines": {
-    "vscode": "^1.86.0"
+    "vscode": "^1.87.0"
   },
   "categories": [
     "Other"
@@ -55,7 +55,7 @@
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
-    "@types/vscode": "^1.86.0",
+    "@types/vscode": "^1.87.0",
     "typescript": "^5.4.3",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
