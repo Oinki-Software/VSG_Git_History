@@ -21,6 +21,7 @@ export class GitLogViewer {
     }
 
     const cwd = workspaceFolders[0].uri.fsPath;
+    console.log(`Fetching git log for cwd: ${cwd}`);
 
     try {
       const { stdout } = await execAsync(

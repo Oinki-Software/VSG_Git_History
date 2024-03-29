@@ -8,24 +8,37 @@ export function activate(context: vscode.ExtensionContext) {
     const gitLogDataProvider = new GitLogDataProvider();
     vscode.window.createTreeView('gitLogViewer', { treeDataProvider: gitLogDataProvider });
 
-    let disposable = vscode.commands.registerCommand('vsc-git-history.performGitReset', async (commitHash: string) => {
+    context.subscriptions.push(vscode.commands.registerCommand('vsc-git-history.performGitReset', async (commitHash: string) => {
         const resetType = await vscode.window.showQuickPick(['Soft Reset', 'Hard Reset'], {
             placeHolder: 'Choose reset type',
         });
         if (resetType) {
-            performGitReset(commitHash, resetType).catch(error => {
+            await performGitReset(commitHash, resetType).catch(error => {
                 console.error('Failed to perform git reset:', error);
                 vscode.window.showErrorMessage(`Failed to perform git reset. See console for details.`);
             });
         }
-    });
+    }));
 
-    context.subscriptions.push(disposable);
+    if (vscode.workspace.workspaceFolders) {
+        const workspaceFolder = vscode.workspace.workspaceFolders[0];
+        const gitRefsPathPattern = new vscode.RelativePattern(workspaceFolder, '.git/refs/**');
+        const watcher = vscode.workspace.createFileSystemWatcher(gitRefsPathPattern, false, false, false);
+        watcher.onDidChange(() => gitLogDataProvider.refresh());
+        watcher.onDidCreate(() => gitLogDataProvider.refresh());
+        watcher.onDidDelete(() => gitLogDataProvider.refresh());
+        context.subscriptions.push(watcher);
+    } else {
+        console.log("No workspace folder found, cannot create FileSystemWatcher.");
+    }
 }
 
 export function deactivate() {}
 
 class GitLogDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
+    private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | null> = new vscode.EventEmitter<vscode.TreeItem | undefined | null>();
+    readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | null> = this._onDidChangeTreeData.event;
+
     async getTreeItem(element: vscode.TreeItem): Promise<vscode.TreeItem> {
         return element;
     }
@@ -33,23 +46,22 @@ class GitLogDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     async getChildren(element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
         if (!element) {
             const gitLog = await GitLogViewer.getGitLog();
-            if (gitLog && gitLog.length > 0) {
-                return gitLog.map(commit => {
-                    let item = new vscode.TreeItem(`${commit.hash.substring(0, 7)} - ${commit.date} - ${commit.message}`, vscode.TreeItemCollapsibleState.None);
-                    item.tooltip = `Reset to ${commit.hash}`;
-                    item.command = { 
-                        command: 'vsc-git-history.performGitReset', 
-                        title: "Perform Git Reset", 
-                        arguments: [commit.hash]
-                    };
-                    return item;
-                });
-            } else {
-                vscode.window.showInformationMessage('No git log available.');
-                return [];
-            }
+            return gitLog.map(log => {
+                let item = new vscode.TreeItem(`${log.hash.substring(0, 7)} - ${log.date} - ${log.message}`, vscode.TreeItemCollapsibleState.None);
+                item.tooltip = `Reset to ${log.hash}`;
+                item.command = {
+                    command: 'vsc-git-history.performGitReset',
+                    title: "Perform Git Reset",
+                    arguments: [log.hash]
+                };
+                return item;
+            });
         } else {
             return [];
         }
+    }
+
+    refresh(): void {
+        this._onDidChangeTreeData.fire(null);
     }
 }
