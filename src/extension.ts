@@ -49,6 +49,7 @@ class GitLogDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         return element;
     }
 
+    // get the values in the tree element selected
     async getChildren(element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
         if (!element) {
             const gitLog = await GitLogViewer.getGitLog();
