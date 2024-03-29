@@ -24,7 +24,7 @@ export class GitLogViewer {
 
     try {
       const { stdout } = await execAsync(
-        `git log --date-order --pretty=format:"%h %x1f %ad %x1f %s" --date=format:"%a %b %d %H:%M:%S %Y"`,
+        `git log --date-order --pretty=format:"%h %x1f %ad %x1f %s" --date=format:"%a %b %d %H:%M:%S"`,
         { cwd }
       );
       console.log('Git log fetched successfully.');
