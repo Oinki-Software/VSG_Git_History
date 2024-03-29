@@ -14,7 +14,8 @@
     "onCommand:vsc-git-history.viewGitLog",
     "onView:vscGitHistory.gitLogViewer",
     "onView:vscGitHistory.resetHistoryPanel",
-    "onCommand:vsc-git-history.viewGitLogPanel"
+    "onCommand:vsc-git-history.viewGitLogPanel",
+    "onCommand:vsc-git-history.performGitReset"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -26,6 +27,10 @@
       {
         "command": "vsc-git-history.viewGitLogPanel",
         "title": "Open Git Log Viewer"
+      },
+      {
+        "command": "vsc-git-history.performGitReset",
+        "title": "Perform Git Reset"
       }
     ],
     "viewsContainers": {

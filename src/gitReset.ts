@@ -12,26 +12,29 @@ export async function performGitReset(commitHash: string, resetType: string) {
         return;
     }
 
-    let resetCommand = '';
-    switch (resetType) {
-        case 'Soft Reset':
-            resetCommand = `git reset --soft ${commitHash}`;
-            break;
-        case 'Hard Reset':
-            resetCommand = `git reset --hard ${commitHash}`;
-            break;
-        default:
-            vscode.window.showErrorMessage('Invalid reset type selected.');
-            console.error('Invalid reset type selected.');
-            return;
+    const resetOptions: { [key: string]: string } = {
+        'Soft Reset': 'soft',
+        'Hard Reset': 'hard'
+    };
+
+    const gitResetOption = resetOptions[resetType];
+    if (!gitResetOption) {
+        vscode.window.showErrorMessage('Invalid reset type selected.');
+        console.error('Invalid reset type selected.');
+        return;
     }
 
+    const resetCommand = `git reset --${gitResetOption} ${commitHash}`;
     try {
         const { stdout, stderr } = await execAsync(resetCommand, { cwd });
+        if (stderr) {
+            throw new Error(stderr);
+        }
         console.log(`Reset command executed successfully: ${stdout}`);
         vscode.window.showInformationMessage(`Successfully performed ${resetType} to commit ${commitHash}.`);
     } catch (error) {
+        const errorMessage = (error as Error).message;
         vscode.window.showErrorMessage(`Failed to perform ${resetType} to commit ${commitHash}. See console for details.`);
-        console.error(`Failed to execute git reset command: ${(error as any).message}`, error);
+        console.error(`Failed to execute git reset command: ${errorMessage}`, error);
     }
 }

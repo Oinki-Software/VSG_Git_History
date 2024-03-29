@@ -2,10 +2,12 @@ import * as vscode from 'vscode';
 import { GitLogViewer } from './gitLogViewer';
 import { performGitReset } from './gitReset';
 
+// This class is responsible for showing the Git Log Viewer UI in a webview panel
 export class GitLogViewerUI {
     private static panel: vscode.WebviewPanel | undefined;
     private static refreshIntervalId: NodeJS.Timeout | undefined;
 
+    // This method is responsible for showing the Git Log Viewer UI in a webview panel
     public static async showGitLogPanel(context: vscode.ExtensionContext) {
         if (this.panel) {
             this.panel.reveal(vscode.ViewColumn.One);
@@ -50,7 +52,7 @@ export class GitLogViewerUI {
             this.refreshIntervalId = setInterval(() => this.refreshGitLog(), 30000);
         }
     }
-
+    // This method is responsible for showing the reset options for a selected commit
     private static async showResetOptions(commitHash: string) {
         console.log('Showing reset options for commit:', commitHash); // Added log for debugging reset options
         const resetType = await vscode.window.showQuickPick(['Soft Reset', 'Hard Reset'], {
@@ -66,6 +68,7 @@ export class GitLogViewerUI {
         }
     }
 
+    // This method is responsible for getting the webview content for the Git Log Viewer
     private static async getWebviewContent(): Promise<string> {
         const gitLog = await GitLogViewer.getGitLog();
         const logListItems = gitLog.map(commit => 

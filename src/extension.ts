@@ -60,6 +60,7 @@ class GitLogDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
                         return new vscode.TreeItem(`${commit.hash} - ${commit.date} - ${commit.message}`);
                     });
                     return commits;
+                    console.log('Commits:', commits);  // Logging the commits for debugging
                 } else {
                     return [];
                 }
