@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { GitLogViewer } from './gitLogViewer';
+// Assuming performGitReset is adapted to perform a soft reset directly
 import { performGitReset } from './gitReset';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -9,11 +10,16 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.createTreeView('gitLogViewer', { treeDataProvider: gitLogDataProvider });
 
     context.subscriptions.push(vscode.commands.registerCommand('vsc-git-history.performGitReset', async (commitHash: string) => {
-        const resetType = await vscode.window.showQuickPick(['Soft Reset', 'Hard Reset'], {
-            placeHolder: 'Choose reset type',
-        });
-        if (resetType) {
-            await performGitReset(commitHash, resetType).catch(error => {
+        // Show a confirmation dialog before proceeding
+        const userChoice = await vscode.window.showWarningMessage(
+            `Are you sure you want to soft reset to commit ${commitHash}? This will move the current HEAD to this commit but keep the working directory unchanged.`,
+            { modal: true },
+            'Confirm' // Only providing a positive confirmation option
+
+        );
+
+        if (userChoice === 'Confirm') {
+            await performGitReset(commitHash).catch(error => {
                 console.error('Failed to perform git reset:', error);
                 vscode.window.showErrorMessage(`Failed to perform git reset. See console for details.`);
             });

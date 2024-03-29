@@ -55,11 +55,11 @@ export class GitLogViewerUI {
     // This method is responsible for showing the reset options for a selected commit
     private static async showResetOptions(commitHash: string) {
         console.log('Showing reset options for commit:', commitHash); // Added log for debugging reset options
-        const resetType = await vscode.window.showQuickPick(['Soft Reset', 'Hard Reset'], {
+        const resetType = await vscode.window.showQuickPick(['Soft Reset'], {
             placeHolder: 'Choose reset type',
         });
         if (resetType) {
-            await performGitReset(commitHash, resetType).catch(error => {
+            await performGitReset(commitHash).catch(error => {
                 console.error('Failed to perform git reset:', error);
                 vscode.window.showErrorMessage(`Failed to perform git reset. See console for details.`);
             });

@@ -25,27 +25,36 @@ export class GitLogViewer {
 
     try {
       const { stdout } = await execAsync(
-        `git log --date-order --pretty=format:"%h %x1f %ad %x1f %s" --date=format:"%a %b %d %H:%M:%S"`,
+        `git log -g --pretty=format:"%h %gd - %s" --date=format:'%Y-%m-%d %H:%M:%S'`,
         { cwd }
       );
-      console.log('Git log fetched successfully.');
+      console.log('Git reflog fetched successfully.');
 
+      // Corrected parsing logic
       const commits = stdout.split('\n').filter(line => line.trim() !== '').map(line => {
-        const parts = line.split('\x1f');
-        if (parts.length === 3) {
-          const [hash, date, message] = parts;
+        // Find the indices for the hash, date, and message
+        const hashEndIndex = line.indexOf(' ');
+        const messageStartIndex = line.lastIndexOf(' - ') + 3;
+
+        if (hashEndIndex !== -1 && messageStartIndex > hashEndIndex) {
+          const hash = line.substring(0, hashEndIndex);
+          // Corrected extraction of date and time from the reflog entry
+          const date = line.substring(hashEndIndex + 1, messageStartIndex - 3).replace('HEAD@{', '').replace('}', '');
+          const message = line.substring(messageStartIndex);
+
           return { hash, date, message };
         }
-        return null;
-      }).filter(commit => commit !== null) as GitCommit[];
+        // Instead of returning null, ensure every line returns a valid object
+        return { hash: "", date: "", message: "Parsing error" };
+      });
 
-      console.log(`Parsed ${commits.length} commits from git log.`);
-      return commits;
+      console.log(`Parsed ${commits.length} commits from git reflog.`);
+      return commits as GitCommit[];
     } catch (error) {
       vscode.window.showErrorMessage(
-        'Failed to execute git log. Make sure you have git installed and the open folder is a git repository.'
+        'Failed to execute git reflog. Make sure you have git installed and the open folder is a git repository.'
       );
-      console.error('Failed to execute git log:', error);
+      console.error('Failed to execute git reflog:', error);
       return [];
     }
   }
