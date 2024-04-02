@@ -50,7 +50,7 @@ This extension is released under the MIT License. See the LICENSE file for more 
 
 ## For more information
 
-- [Repository] (https://github.com/Oinki-Software/VSG_Git_History.git)
+- [Repository](https://github.com/Oinki-Software/VSG_Git_History.git)
 - [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
 - [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
