@@ -11,14 +11,18 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vsc-git-history.viewGitLog",
     "onView:vscGitHistory.gitLogViewer",
-    "onView:vscGitHistory.resetHistoryPanel",
     "onCommand:vsc-git-history.viewGitLogPanel",
-    "onCommand:vsc-git-history.performGitReset"
+    "onCommand:vsc-git-history.viewGitHistory"
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "vsc-git-history.viewGitHistory",
+        "title": "View Oinki Git Log"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {

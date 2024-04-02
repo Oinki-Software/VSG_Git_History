@@ -37,6 +37,13 @@ export function activate(context: vscode.ExtensionContext) {
     } else {
         console.log("No workspace folder found, cannot create FileSystemWatcher.");
     }
+
+    let disposable = vscode.commands.registerCommand('vsc-git-history.viewGitHistory', async () => {
+        // This will try to open and focus on your view container
+        await vscode.commands.executeCommand('workbench.view.extension.vscGitHistory');
+    });
+
+    context.subscriptions.push(disposable);
 }
 
 export function deactivate() {}
