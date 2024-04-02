@@ -23,14 +23,14 @@ export class GitLogViewer {
 
     try {
       const { stdout } = await execAsync(
-        `git log -g --pretty=format:"%h %gd - %gs" --date=format:'%Y-%m-%d %H:%M:%S'`, { cwd }
+        `git log -g --pretty=format:"%h %gd ||| %gs" --date=format:'%Y-%m-%d %H:%M:%S'`, { cwd }
       );
 
       const commits: GitCommit[] = stdout.split('\n')
         .filter(line => line.trim() !== '')
         .map((line): GitCommit => {
           // Split the line into parts, considering the format
-          const parts = line.split(' - ', 2);
+          const parts = line.split(' ||| ', 2);
           console.log(`parts: ${parts}`);
           const message = parts[1];
           console.log(`message: ${message}`);
