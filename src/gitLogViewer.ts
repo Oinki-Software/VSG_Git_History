@@ -23,7 +23,7 @@ export class GitLogViewer {
 
     try {
       const { stdout } = await execAsync(
-        `git log -g --pretty=format:"%h %gd - %s" --date=format:'%Y-%m-%d %H:%M:%S'`, { cwd }
+        `git log -g --pretty=format:"%h %gd - %gs" --date=format:'%Y-%m-%d %H:%M:%S'`, { cwd }
       );
 
       const commits: GitCommit[] = stdout.split('\n')
