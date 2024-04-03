@@ -1,9 +1,10 @@
 {
   "name": "vsc-git-history",
   "displayName": "Oinki Git History",
-  "description": "Visual Studio Code Extension for Gitc Commit Log and Soft Reset",
+  "description": "Visual Studio Code Extension for Git Commit Log and Soft Reset",
   "version": "0.0.2",
   "publisher": "Oinki Software",
+  "icon": "media/oinkiwhite.png",
   "engines": {
     "vscode": "^1.87.0"
   },
