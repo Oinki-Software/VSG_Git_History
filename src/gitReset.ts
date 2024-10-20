@@ -4,7 +4,7 @@ import * as util from 'util';
 
 const execAsync = util.promisify(exec);
 
-export async function performGitReset(commitHash: string) {
+export async function performGitRevertToCommitState(commitHash: string) {
     const cwd = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : null;
     if (!cwd) {
         vscode.window.showErrorMessage('No open workspace folder found.');
@@ -12,18 +12,33 @@ export async function performGitReset(commitHash: string) {
         return;
     }
 
-    //const resetCommand = `git reset --${gitResetOption} ${commitHash}`;
-    const resetCommand = `git reset --soft ${commitHash}`;
     try {
-        const { stdout, stderr } = await execAsync(resetCommand, { cwd });
-        if (stderr) {
-            throw new Error(stderr);
+        // Step 1: Checkout the files from the specified commit
+        const checkoutCommand = `git checkout ${commitHash} -- .`;
+        const { stderr: checkoutStderr } = await execAsync(checkoutCommand, { cwd });
+        if (checkoutStderr) {
+            throw new Error(checkoutStderr);
         }
-        console.log(`Reset command executed successfully: ${stdout}`);
-        vscode.window.showInformationMessage(`Successfully performed soft reset to commit ${commitHash}.`);
+
+        // Step 2: Stage the changes
+        const addCommand = `git add .`;
+        const { stderr: addStderr } = await execAsync(addCommand, { cwd });
+        if (addStderr) {
+            throw new Error(addStderr);
+        }
+
+        // Step 3: Commit the changes
+        const commitMessage = `Revert files to state at commit ${commitHash}`;
+        const commitCommand = `git commit -m "${commitMessage}"`;
+        const { stderr: commitStderr } = await execAsync(commitCommand, { cwd });
+        if (commitStderr) {
+            throw new Error(commitStderr);
+        }
+
+        vscode.window.showInformationMessage(`Successfully reverted files to state at commit ${commitHash} and created a new commit.`);
     } catch (error) {
         const errorMessage = (error as Error).message;
-        vscode.window.showErrorMessage(`Failed to perform soft reset to commit ${commitHash}. See console for details.`);
-        console.error(`Failed to execute git reset command: ${errorMessage}`, error);
+        vscode.window.showErrorMessage(`Failed to revert to commit ${commitHash}. See console for details.`);
+        console.error(`Failed to execute git revert command: ${errorMessage}`, error);
     }
 }
