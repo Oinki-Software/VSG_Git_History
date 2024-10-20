@@ -12,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand('vsc-git-history.performGitReset', async (commitHash: string) => {
         // Show a confirmation dialog before proceeding
         const userChoice = await vscode.window.showWarningMessage(
-            `Are you sure you want to soft reset to commit ${commitHash}? This will move the current HEAD to this commit but keep the working directory unchanged.`,
+            `Are you sure you want to revert files to state at commit ${commitHash}? This will move the current HEAD to this commit but keep the working directory unchanged.`,
             { modal: true },
             'Confirm' // Only providing a positive confirmation option
 
