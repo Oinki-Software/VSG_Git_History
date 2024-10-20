@@ -4,7 +4,7 @@ import * as util from 'util';
 
 const execAsync = util.promisify(exec);
 
-export async function performGitRevertToCommitState(commitHash: string) {
+export async function performGitReset(commitHash: string) {
     const cwd = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : null;
     if (!cwd) {
         vscode.window.showErrorMessage('No open workspace folder found.');
